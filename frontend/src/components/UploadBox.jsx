@@ -41,6 +41,15 @@ const UploadBox = ({ onResult, onError, loading, setLoading }) => {
     }
   };
 
+  const fileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+  };
+
   const handleFileSubmit = async () => {
     if (!selectedFile) return;
     setLoading(true);
@@ -50,10 +59,11 @@ const UploadBox = ({ onResult, onError, loading, setLoading }) => {
     formData.append('image', selectedFile);
 
     try {
+      const base64String = await fileToBase64(selectedFile);
       const response = await axios.post('http://localhost:5000/api/detect', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-      onResult(response.data);
+      onResult({ ...response.data, imagePreview: base64String });
     } catch (err) {
       onError(err.response?.data?.error || err.message || "An error occurred");
     } finally {
@@ -70,7 +80,7 @@ const UploadBox = ({ onResult, onError, loading, setLoading }) => {
 
     try {
       const response = await axios.post('http://localhost:5000/api/detect', { imageUrl: targetUrl });
-      onResult(response.data);
+      onResult({ ...response.data, imagePreview: targetUrl });
     } catch (err) {
       onError(err.response?.data?.error || err.message || "An error occurred");
       setPreview(null);
