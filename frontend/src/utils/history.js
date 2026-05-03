@@ -5,10 +5,19 @@ export const addScan = (scan) => {
   const newScan = {
     id: Date.now(),
     timestamp: new Date().toISOString(),
-    ...scan
+    ...scan,
+    imagePreview: scan.imagePreview?.startsWith('data:') 
+      ? null
+      : scan.imagePreview
   };
-  history.unshift(newScan); // Add to beginning (newest first)
-  localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+  history.unshift(newScan);
+  const trimmed = history.slice(0, 20);
+  try {
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(trimmed));
+  } catch (e) {
+    localStorage.removeItem(HISTORY_KEY);
+    localStorage.setItem(HISTORY_KEY, JSON.stringify([newScan]));
+  }
 };
 
 export const getHistory = () => {

@@ -35,7 +35,7 @@ const ResultCard = ({ result, onReset }) => {
   const aiGeneratedPercent = Math.round((scores?.ai_generated || 0) * 100);
 
   return (
-    <div className="result-card">
+    <div className={`result-card glow-${verdict.toLowerCase()}`}>
       <div className="verdict-badge" style={{ backgroundColor: style.bg, color: style.color }}>
         {verdict === 'REAL' && '✅ REAL'}
         {verdict === 'SUSPICIOUS' && '⚠️ SUSPICIOUS'}
@@ -73,6 +73,26 @@ const ResultCard = ({ result, onReset }) => {
           </div>
         </div>
       </div>
+
+      {result.signals && result.signals.length > 0 && (
+        <div className="detection-signals">
+          <h4>Detection Signals</h4>
+          <div className="signals-list">
+            {result.signals.map((signal, idx) => {
+              const dotColor = signal.severity === 'high' ? '#ff4d4d' : signal.severity === 'medium' ? '#f5c400' : '#00f5a0';
+              return (
+                <div key={idx} className="signal-card" style={{ borderLeftColor: dotColor }}>
+                  <div className="signal-header">
+                    <span className="signal-dot" style={{ backgroundColor: dotColor }}></span>
+                    <span className="signal-label">{signal.label}</span>
+                  </div>
+                  <p className="signal-desc">{signal.description}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       <div className="explanation">
         <p>{explanation}</p>

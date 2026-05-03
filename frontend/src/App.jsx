@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import UploadBox from './components/UploadBox'
 import ResultCard from './components/ResultCard'
 import HistoryPage from './components/HistoryPage'
+import LandingPage from './components/LandingPage'
 import { addScan } from './utils/history'
 import './App.css'
 
@@ -10,11 +11,20 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showHistory, setShowHistory] = useState(false);
+  const [showLanding, setShowLanding] = useState(false);
+
+  const handleEnterApp = () => {
+    setShowLanding(false);
+    window.scrollTo(0, 0);
+  };
 
   const handleResult = (data) => {
-    // Add to history
     addScan(data);
     setResult(data);
+    if (showLanding) {
+      setShowLanding(false);
+      window.scrollTo(0, 0);
+    }
   }
 
   const handleError = (message) => {
@@ -31,11 +41,32 @@ function App() {
     resetState();
   }
 
+  const goHome = () => {
+    setShowLanding(true);
+    resetState();
+    setShowHistory(false);
+  }
+
+  if (showLanding) {
+    return (
+      <LandingPage 
+        onEnterApp={handleEnterApp} 
+        onResult={handleResult} 
+        onError={handleError}
+        loading={loading}
+        setLoading={setLoading}
+      />
+    );
+  }
+
   return (
-    <div className="app-container">
+    <div className="app-container fade-in">
       <header className="header">
         <div className="header-content">
-          <h1>🛡️ DeepShield</h1>
+          <h1 style={{ cursor: 'pointer' }} onClick={goHome}>
+            <span className="back-home-btn" style={{ fontSize: '1.2rem', marginRight: '0.5rem' }}>←</span>
+            🛡️ DeepShield
+          </h1>
           <button className="history-btn" onClick={toggleHistory}>
             {showHistory ? 'Back to Scan' : 'History 🕐'}
           </button>
@@ -47,7 +78,6 @@ function App() {
         <HistoryPage onBack={toggleHistory} />
       ) : (
         <>
-          {/* Main View Content */}
           {!result && !loading && (
             <div className="threat-banner">
               ⚠️ Deepfake fraud caused $200M+ in losses in Q1 2025 alone. Stay protected.
@@ -121,7 +151,8 @@ function App() {
 
       <footer className="footer">
         <p>DeepShield © 2025 — Built to fight misinformation</p>
-        <p><a href="https://github.com/placeholder" target="_blank" rel="noreferrer">GitHub Repository</a></p>
+        <p><a href="https://github.com/aryanEren-cmyk/DeepShield" target="_blank" rel="noreferrer">GitHub Repository</a>
+        </p>
         <p className="powered-by">Powered by Sightengine AI</p>
       </footer>
     </div>

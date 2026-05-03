@@ -74,6 +74,35 @@ router.post('/', upload.single('image'), async (req, res) => {
       explanation = "This image has some signs of manipulation. Verify before trusting.";
     }
 
+    const signals = [];
+
+    if (deepfakeScore > 0.3) {
+      signals.push({
+        type: "deepfake",
+        severity: deepfakeScore > 0.6 ? "high" : "medium",
+        label: "Face manipulation detected",
+        description: "Facial geometry shows signs of AI-based swapping or regeneration"
+      });
+    }
+
+    if (aiGeneratedScore > 0.3) {
+      signals.push({
+        type: "ai_generated", 
+        severity: aiGeneratedScore > 0.6 ? "high" : "medium",
+        label: "AI generation signature found",
+        description: "Pixel patterns consistent with diffusion models like Stable Diffusion or Midjourney"
+      });
+    }
+
+    if (maxScore <= 0.3) {
+      signals.push({
+        type: "authentic",
+        severity: "none",
+        label: "Natural image patterns",
+        description: "Lighting, texture and pixel distribution appear consistent with a real photograph"
+      });
+    }
+
     // Return the formatted response
     return res.json({
       success: true,
@@ -83,7 +112,8 @@ router.post('/', upload.single('image'), async (req, res) => {
         deepfake: deepfakeScore,
         ai_generated: aiGeneratedScore
       },
-      explanation
+      explanation,
+      signals
     });
 
   } catch (error) {
