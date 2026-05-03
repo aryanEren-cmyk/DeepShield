@@ -32,15 +32,18 @@ router.post('/', upload.single('image'), async (req, res) => {
       });
     } else if (file) {
       // MODE 2 - File Upload
-      response = await axios.post('https://api.sightengine.com/1.0/check.json', {
-        models: 'deepfake,genai',
-        api_user: process.env.SIGHTENGINE_API_USER,
-        api_secret: process.env.SIGHTENGINE_API_SECRET,
-        media: new Blob([file.buffer], { type: file.mimetype })
-      }, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+      const FormData = require('form-data');
+      const form = new FormData();
+      form.append('media', file.buffer, {
+        filename: file.originalname,
+        contentType: file.mimetype
+      });
+      form.append('models', 'deepfake,genai');
+      form.append('api_user', process.env.SIGHTENGINE_API_USER);
+      form.append('api_secret', process.env.SIGHTENGINE_API_SECRET);
+
+      response = await axios.post('https://api.sightengine.com/1.0/check.json', form, {
+        headers: form.getHeaders()
       });
     }
 
