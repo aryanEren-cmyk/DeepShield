@@ -11,7 +11,10 @@ app.use(express.json()); // Parse JSON request bodies
 
 // Routes
 const detectRoute = require('./routes/detect');
+const scanlinkRoute = require('./routes/scanlink');
+
 app.use('/api/detect', detectRoute);
+app.use('/api/scanlink', scanlinkRoute);
 
 // Test Endpoint (GET /api/health)
 app.get('/api/health', (req, res) => {

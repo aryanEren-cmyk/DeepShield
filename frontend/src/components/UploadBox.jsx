@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 
-const UploadBox = ({ onResult, onError, loading, setLoading }) => {
+const UploadBox = ({ onResult, onLinkResult, onError, loading, setLoading }) => {
   const [mode, setMode] = useState('file');
   const [urlInput, setUrlInput] = useState('');
+  const [linkInput, setLinkInput] = useState('');
   const [preview, setPreview] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [loadingStep, setLoadingStep] = useState(0);
@@ -77,7 +78,7 @@ const UploadBox = ({ onResult, onError, loading, setLoading }) => {
     if (!targetUrl) return;
     setLoading(true);
     onError(null);
-    setPreview(targetUrl); // For preview during loading
+    setPreview(targetUrl);
 
     try {
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
@@ -97,6 +98,32 @@ const UploadBox = ({ onResult, onError, loading, setLoading }) => {
     handleUrlSubmit(url);
   };
 
+  const handleLinkSubmit = async (overrideUrl) => {
+    const targetUrl = overrideUrl || linkInput;
+    if (!targetUrl) return;
+
+    if (overrideUrl) {
+      setMode('link');
+      setLinkInput(overrideUrl);
+    }
+
+    setLoading(true);
+    onError(null);
+    setPreview(null);
+
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const response = await axios.post(`${apiUrl}/api/scanlink`, { url: targetUrl });
+      if (onLinkResult) {
+        onLinkResult(response.data);
+      }
+    } catch (err) {
+      onError(err.response?.data?.error || err.message || "An error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const renderLoadingState = () => (
     <div className="enhanced-loading">
       {preview && (
@@ -109,13 +136,13 @@ const UploadBox = ({ onResult, onError, loading, setLoading }) => {
         <h3 className="pulsing-text">Analyzing<span>.</span><span>.</span><span>.</span></h3>
         <ul className="loading-steps">
           <li className={loadingStep >= 1 ? 'active' : ''}>
-            {loadingStep >= 1 ? '✅' : '⏳'} Checking for GAN artifacts...
+            {loadingStep >= 1 ? '✅' : '⏳'} {mode === 'link' ? 'Submitting URL to security scanners...' : 'Checking for GAN artifacts...'}
           </li>
           <li className={loadingStep >= 2 ? 'active' : ''}>
-            {loadingStep >= 2 ? '✅' : '⏳'} Analyzing facial geometry...
+            {loadingStep >= 2 ? '✅' : '⏳'} {mode === 'link' ? 'Analyzing across 70+ engines...' : 'Analyzing facial geometry...'}
           </li>
           <li className={loadingStep >= 3 ? 'active' : ''}>
-            {loadingStep >= 3 ? '✅' : '⏳'} Computing confidence score...
+            {loadingStep >= 3 ? '✅' : '⏳'} {mode === 'link' ? 'Computing threat score...' : 'Computing confidence score...'}
           </li>
         </ul>
       </div>
@@ -131,13 +158,14 @@ const UploadBox = ({ onResult, onError, loading, setLoading }) => {
           <div className="mode-toggle">
             <button className={mode === 'file' ? 'active' : ''} onClick={() => setMode('file')}>File Upload</button>
             <button className={mode === 'url' ? 'active' : ''} onClick={() => setMode('url')}>Image URL</button>
+            <button className={mode === 'link' ? 'active' : ''} onClick={() => setMode('link')}>🔗 Scan Link</button>
           </div>
 
           <div className="upload-content">
             {mode === 'file' ? (
               <div className="file-mode">
-                <div 
-                  className="drag-drop-area" 
+                <div
+                  className="drag-drop-area"
                   onClick={() => fileInputRef.current.click()}
                   onTouchStart={() => fileInputRef.current.click()}
                 >
@@ -145,53 +173,83 @@ const UploadBox = ({ onResult, onError, loading, setLoading }) => {
                     <img src={preview} alt="Preview" className="image-preview" />
                   ) : (
                     <div className="placeholder">
-                      <span style={{fontSize: '3rem'}}>📁</span>
+                      <span style={{ fontSize: '3rem' }}>📁</span>
                       <p>Click or drag image to upload</p>
                       <p className="subtext">JPG, PNG, WEBP</p>
                     </div>
                   )}
                 </div>
-                <input 
-                  type="file" 
-                  ref={fileInputRef} 
-                  style={{display: 'none'}} 
-                  accept="image/jpeg, image/png, image/webp" 
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  style={{ display: 'none' }}
+                  accept="image/jpeg, image/png, image/webp"
                   onChange={handleFileChange}
                 />
                 {selectedFile && (
                   <button className="submit-btn" onClick={handleFileSubmit}>Scan File</button>
                 )}
               </div>
-            ) : (
+            ) : mode === 'url' ? (
               <div className="url-mode">
-                <input 
-                  type="text" 
-                  value={urlInput} 
+                <input
+                  type="text"
+                  value={urlInput}
                   onChange={(e) => {
                     setUrlInput(e.target.value);
                     setPreview(e.target.value);
-                  }} 
+                  }}
                   placeholder="Paste image URL here..."
                   className="url-input"
                 />
                 {preview && mode === 'url' && urlInput && (
-                   <img src={preview} alt="Preview" className="image-preview url-preview" onError={(e) => e.target.style.display='none'} onLoad={(e) => e.target.style.display='block'}/>
+                  <img
+                    src={preview}
+                    alt="Preview"
+                    className="image-preview url-preview"
+                    onError={(e) => e.target.style.display = 'none'}
+                    onLoad={(e) => e.target.style.display = 'block'}
+                  />
                 )}
                 <button className="submit-btn" onClick={() => handleUrlSubmit(null)} disabled={!urlInput}>Scan URL</button>
+              </div>
+            ) : (
+              <div className="link-mode">
+                <input
+                  type="text"
+                  value={linkInput}
+                  onChange={(e) => setLinkInput(e.target.value)}
+                  placeholder="Paste suspicious link here (WhatsApp, SMS, email...)"
+                  className="url-input"
+                />
+                <p style={{ fontSize: '0.85rem', color: '#888', marginTop: '0.5rem', marginBottom: '1rem' }}>
+                  Works with any URL — WhatsApp forwards, SMS links, email links, social media posts
+                </p>
+                <button className="submit-btn" onClick={() => handleLinkSubmit(null)} disabled={!linkInput}>Scan Link 🔗</button>
+                <div className="quick-test-section" style={{ marginTop: '1.5rem', borderTop: '1px solid #333', paddingTop: '1rem' }}>
+                  <p>Quick Test</p>
+                  <div className="test-buttons">
+                    <button className="test-btn" onClick={() => handleLinkSubmit("https://google.com")}>Test Safe Link</button>
+                    <button className="test-btn" onClick={() => handleLinkSubmit("https://bbc.com")}>Test News Site</button>
+                    <button className="test-btn" onClick={() => handleLinkSubmit("http://malware.testing.google.test/testing/malware/")}>Test Suspicious</button>
+                  </div>
+                </div>
               </div>
             )}
           </div>
 
-          <div className="quick-test-section">
-            <p>Quick Test</p>
-            <div className="test-buttons">
-              {testImages.map((img, idx) => (
-                <button key={idx} onClick={() => handleQuickTest(img.url)} className="test-btn">
-                  {img.label}
-                </button>
-              ))}
+          {mode !== 'link' && (
+            <div className="quick-test-section">
+              <p>Quick Test</p>
+              <div className="test-buttons">
+                {testImages.map((img, idx) => (
+                  <button key={idx} onClick={() => handleQuickTest(img.url)} className="test-btn">
+                    {img.label}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </>
       )}
     </div>
