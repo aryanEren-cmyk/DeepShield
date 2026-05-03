@@ -1,0 +1,26 @@
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+// Middleware
+app.use(cors()); // Enable CORS for ALL origins
+app.use(express.json()); // Parse JSON request bodies
+
+// Routes
+const detectRoute = require('./routes/detect');
+app.use('/api/detect', detectRoute);
+
+// Test Endpoint (GET /api/health)
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: "ok",
+    message: "DeepShield backend is running"
+  });
+});
+
+app.listen(PORT, () => {
+  console.log(`DeepShield backend running on port ${PORT}`);
+});
