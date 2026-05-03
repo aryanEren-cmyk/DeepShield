@@ -35,8 +35,8 @@ const ResultCard = ({ result, onReset }) => {
   const aiGeneratedPercent = Math.round((scores?.ai_generated || 0) * 100);
 
   return (
-    <div className={`result-card glow-${verdict.toLowerCase()}`}>
-      <div className="verdict-badge" style={{ backgroundColor: style.bg, color: style.color }}>
+    <div className={`result-card glow-${verdict.toLowerCase()} ${verdict === 'FAKE' ? 'dangerous-card' : ''}`}>
+      <div className={`verdict-badge ${verdict.toLowerCase()}-badge`} style={{ backgroundColor: style.bg, color: style.color }}>
         {verdict === 'REAL' && '✅ REAL'}
         {verdict === 'SUSPICIOUS' && '⚠️ SUSPICIOUS'}
         {verdict === 'FAKE' && '❌ FAKE'}

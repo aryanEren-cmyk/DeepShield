@@ -147,16 +147,19 @@ function App() {
               <h3>How DeepShield Works</h3>
               <div className="steps-container">
                 <div className="step-card">
+                  <div className="step-number">1</div>
                   <div className="step-icon">📤</div>
                   <h4>Upload or paste URL</h4>
                   <p>Drop any image or paste a link from anywhere on the web</p>
                 </div>
                 <div className="step-card">
+                  <div className="step-number">2</div>
                   <div className="step-icon">🔍</div>
                   <h4>AI analyzes it</h4>
                   <p>Our model scans for deepfake artifacts, GAN signatures, and manipulation patterns</p>
                 </div>
                 <div className="step-card">
+                  <div className="step-number">3</div>
                   <div className="step-icon">✅</div>
                   <h4>Get instant verdict</h4>
                   <p>Receive a confidence score and clear explanation in under 2 seconds</p>

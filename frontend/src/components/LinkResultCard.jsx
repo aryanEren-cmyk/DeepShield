@@ -5,10 +5,10 @@ const LinkResultCard = ({ result, onReset }) => {
 
   const getVerdictStyle = () => {
     switch(verdict) {
-      case 'SAFE': return { color: '#00f5a0', icon: '✅', label: 'SAFE' };
-      case 'SUSPICIOUS': return { color: '#f5c400', icon: '⚠️', label: 'SUSPICIOUS' };
-      case 'DANGEROUS': return { color: '#ff4d4d', icon: '🚨', label: 'DANGEROUS', pulsing: true };
-      default: return { color: '#ccc', icon: '❓', label: 'UNKNOWN' };
+      case 'SAFE': return { color: '#00f5a0', icon: '✅', label: 'SAFE', badgeClass: 'real-badge' };
+      case 'SUSPICIOUS': return { color: '#f5c400', icon: '⚠️', label: 'SUSPICIOUS', badgeClass: 'suspicious-badge' };
+      case 'DANGEROUS': return { color: '#ff4d4d', icon: '🚨', label: 'DANGEROUS', pulsing: true, badgeClass: 'fake-badge' };
+      default: return { color: '#ccc', icon: '❓', label: 'UNKNOWN', badgeClass: '' };
     }
   };
 
@@ -28,8 +28,8 @@ const LinkResultCard = ({ result, onReset }) => {
   };
 
   return (
-    <div className="result-card">
-      <div className={`verdict-badge ${vStyle.pulsing ? 'pulsing-text' : ''}`} style={{ color: vStyle.color, fontSize: '2.5rem', fontWeight: 'bold', marginBottom: '1rem', textAlign: 'center' }}>
+    <div className={`result-card ${verdict === 'DANGEROUS' ? 'dangerous-card' : ''}`}>
+      <div className={`verdict-badge ${vStyle.badgeClass}`} style={{ color: vStyle.color, fontSize: '2.5rem', fontWeight: 'bold', marginBottom: '1rem', textAlign: 'center' }}>
         {vStyle.icon} {vStyle.label}
       </div>
       
@@ -43,32 +43,32 @@ const LinkResultCard = ({ result, onReset }) => {
       </p>
 
       <div className="stats-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '1.5rem' }}>
-        <div className="stat-box" style={{ padding: '1rem', backgroundColor: 'rgba(255,77,77,0.1)', borderRadius: '8px', borderLeft: '4px solid #ff4d4d', textAlign: 'center' }}>
-          <div style={{ fontSize: '2rem', color: '#ff4d4d', fontWeight: 'bold' }}>{stats.malicious}</div>
+        <div className="stat-box malicious signal-card" style={{ padding: '1rem', borderRadius: '8px', borderLeft: '4px solid #ff4d4d', textAlign: 'center' }}>
+          <div style={{ fontSize: '2rem', color: '#ff4d4d', fontWeight: 'bold' }} className="stat-value">{stats.malicious}</div>
           <div style={{ color: '#aaa', fontSize: '0.9rem' }}>Malicious</div>
         </div>
-        <div className="stat-box" style={{ padding: '1rem', backgroundColor: 'rgba(245,196,0,0.1)', borderRadius: '8px', borderLeft: '4px solid #f5c400', textAlign: 'center' }}>
-          <div style={{ fontSize: '2rem', color: '#f5c400', fontWeight: 'bold' }}>{stats.suspicious}</div>
+        <div className="stat-box suspicious signal-card" style={{ padding: '1rem', borderRadius: '8px', borderLeft: '4px solid #f5c400', textAlign: 'center' }}>
+          <div style={{ fontSize: '2rem', color: '#f5c400', fontWeight: 'bold' }} className="stat-value">{stats.suspicious}</div>
           <div style={{ color: '#aaa', fontSize: '0.9rem' }}>Suspicious</div>
         </div>
-        <div className="stat-box" style={{ padding: '1rem', backgroundColor: 'rgba(0,245,160,0.1)', borderRadius: '8px', borderLeft: '4px solid #00f5a0', textAlign: 'center' }}>
-          <div style={{ fontSize: '2rem', color: '#00f5a0', fontWeight: 'bold' }}>{stats.harmless}</div>
+        <div className="stat-box harmless signal-card" style={{ padding: '1rem', borderRadius: '8px', borderLeft: '4px solid #00f5a0', textAlign: 'center' }}>
+          <div style={{ fontSize: '2rem', color: '#00f5a0', fontWeight: 'bold' }} className="stat-value">{stats.harmless}</div>
           <div style={{ color: '#aaa', fontSize: '0.9rem' }}>Harmless</div>
         </div>
-        <div className="stat-box" style={{ padding: '1rem', backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '8px', borderLeft: '4px solid #888', textAlign: 'center' }}>
-          <div style={{ fontSize: '2rem', color: '#888', fontWeight: 'bold' }}>{stats.undetected}</div>
+        <div className="stat-box signal-card" style={{ padding: '1rem', borderRadius: '8px', borderLeft: '4px solid #888', textAlign: 'center' }}>
+          <div style={{ fontSize: '2rem', color: '#888', fontWeight: 'bold' }} className="stat-value">{stats.undetected}</div>
           <div style={{ color: '#aaa', fontSize: '0.9rem' }}>Undetected</div>
         </div>
       </div>
 
-      <div className="advice-section" style={{ backgroundColor: 'rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '8px', marginBottom: '2rem' }}>
-        <strong style={{ color: '#fff', display: 'block', marginBottom: '0.5rem' }}>What should I do?</strong>
+      <div className="advice-section signal-card" style={{ backgroundColor: 'rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '8px', marginBottom: '2rem', borderLeft: `4px solid ${vStyle.color}` }}>
+        <strong style={{ color: '#fff', display: 'block', marginBottom: '0.5rem' }}>{vStyle.icon} What should I do?</strong>
         <p style={{ margin: 0, color: '#ddd' }}>{getAdvice()}</p>
       </div>
 
       <div className="action-buttons" style={{ display: 'flex', gap: '15px', flexDirection: 'column' }}>
-        <button className="submit-btn" onClick={() => onReset('link')} style={{ width: '100%' }}>Scan Another Link</button>
-        <button className="secondary-btn" onClick={() => onReset('file')} style={{ width: '100%', backgroundColor: 'transparent', border: '1px solid #555', color: '#fff', padding: '12px 24px', borderRadius: '8px', cursor: 'pointer', transition: 'all 0.2s', fontSize: '1rem', fontWeight: '600' }}>
+        <button className="scan-another-btn" onClick={() => onReset('link')} style={{ padding: '12px', width: '100%', borderRadius: '8px', cursor: 'pointer', fontSize: '1rem', fontWeight: '600', color: 'white' }}>Scan Another Link</button>
+        <button className="scan-another-btn" onClick={() => onReset('file')} style={{ padding: '12px', width: '100%', borderRadius: '8px', cursor: 'pointer', fontSize: '1rem', fontWeight: '600', color: 'white' }}>
           Scan an Image Instead
         </button>
       </div>
