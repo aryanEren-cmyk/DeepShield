@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DeepShield Popup</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <h1>🛡️ DeepShield</h1>
+  </header>
+
+  <main id="main-content">
+    <!-- State 1: Idle -->
+    <div id="state-idle" class="state-container active">
+      <p>Right-click any image to scan it</p>
+    </div>
+
+    <!-- State 2: Loading -->
+    <div id="state-loading" class="state-container hidden">
+      <div class="loader"></div>
+      <p>Scanning image...</p>
+    </div>
+
+    <!-- State 3: Result -->
+    <div id="state-result" class="state-container hidden">
+      <img id="scanned-image-preview" src="" alt="Scanned" />
+      <div id="verdict-badge" class="verdict-badge"></div>
+      
+      <div class="confidence-section">
+        <h3 id="confidence-text"></h3>
+      </div>
+      
+      <div class="explanation">
+        <p id="explanation-text"></p>
+      </div>
+
+      <button id="scan-another-btn">Scan Another</button>
+    </div>
+
+    <!-- State 4: Error -->
+    <div id="state-error" class="state-container hidden">
+      <p id="error-message"></p>
+      <button id="error-reset-btn">Back</button>
+    </div>
+  </main>
+
+  <script src="popup.js"></script>
+</body>
+</html>
