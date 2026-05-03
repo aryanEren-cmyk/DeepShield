@@ -139,6 +139,7 @@ const UploadBox = ({ onResult, onError, loading, setLoading }) => {
                 <div 
                   className="drag-drop-area" 
                   onClick={() => fileInputRef.current.click()}
+                  onTouchStart={() => fileInputRef.current.click()}
                 >
                   {preview ? (
                     <img src={preview} alt="Preview" className="image-preview" />
