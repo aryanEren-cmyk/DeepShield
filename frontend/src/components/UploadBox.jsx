@@ -60,7 +60,8 @@ const UploadBox = ({ onResult, onError, loading, setLoading }) => {
 
     try {
       const base64String = await fileToBase64(selectedFile);
-      const response = await axios.post('http://localhost:5000/api/detect', formData, {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const response = await axios.post(`${apiUrl}/api/detect`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       onResult({ ...response.data, imagePreview: base64String });
@@ -79,7 +80,8 @@ const UploadBox = ({ onResult, onError, loading, setLoading }) => {
     setPreview(targetUrl); // For preview during loading
 
     try {
-      const response = await axios.post('http://localhost:5000/api/detect', { imageUrl: targetUrl });
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const response = await axios.post(`${apiUrl}/api/detect`, { imageUrl: targetUrl });
       onResult({ ...response.data, imagePreview: targetUrl });
     } catch (err) {
       onError(err.response?.data?.error || err.message || "An error occurred");
