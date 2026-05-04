@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import UploadBox from './components/UploadBox'
 import ResultCard from './components/ResultCard'
 import LinkResultCard from './components/LinkResultCard'
+import MessageResultCard from './components/MessageResultCard'
 import HistoryPage from './components/HistoryPage'
 import LandingPage from './components/LandingPage'
 import { addScan } from './utils/history'
@@ -10,6 +11,7 @@ import './App.css'
 function App() {
   const [result, setResult] = useState(null);
   const [linkResult, setLinkResult] = useState(null);
+  const [messageResult, setMessageResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showHistory, setShowHistory] = useState(false);
@@ -39,6 +41,14 @@ function App() {
     }
   }
 
+  const handleMessageResult = (data) => {
+    setMessageResult(data);
+    if (showLanding) {
+      setShowLanding(false);
+      window.scrollTo(0, 0);
+    }
+  }
+
   const handleError = (message) => {
     setError(message);
   }
@@ -46,6 +56,7 @@ function App() {
   const resetState = () => {
     setResult(null);
     setLinkResult(null);
+    setMessageResult(null);
     setError(null);
   }
 
@@ -91,13 +102,13 @@ function App() {
         <HistoryPage onBack={toggleHistory} />
       ) : (
         <>
-          {!result && !linkResult && !loading && (
+          {!result && !linkResult && !messageResult && !loading && (
             <div className="threat-banner">
               ⚠️ Deepfake fraud caused $200M+ in losses in Q1 2025 alone. Stay protected.
             </div>
           )}
 
-          {!result && !linkResult && !loading && (
+          {!result && !linkResult && !messageResult && !loading && (
             <section className="hero-section">
               <h2>Don't Get Fooled by Deepfakes</h2>
               <p className="subheadline">Upload any image and know the truth in seconds</p>
@@ -124,10 +135,11 @@ function App() {
             </div>
           )}
 
-          {!result && !linkResult && (
+          {!result && !linkResult && !messageResult && (
             <UploadBox 
               onResult={handleResult} 
               onLinkResult={handleLinkResult}
+              onMessageResult={handleMessageResult}
               onError={handleError}
               loading={loading}
               setLoading={setLoading}
@@ -142,7 +154,11 @@ function App() {
             <LinkResultCard result={linkResult} onReset={resetState} />
           )}
 
-          {!result && !linkResult && !loading && (
+          {messageResult && !loading && (
+            <MessageResultCard result={messageResult} onReset={resetState} />
+          )}
+
+          {!result && !linkResult && !messageResult && !loading && (
             <section className="how-it-works">
               <h3>How DeepShield Works</h3>
               <div className="steps-container">
