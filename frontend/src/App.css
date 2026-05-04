@@ -1775,3 +1775,110 @@ a {
 @media (max-width: 600px) {
   .counter-grid { grid-template-columns: repeat(2, 1fr); }
 }
+
+.awareness-section {
+  width: 100%;
+  padding: 2rem 0;
+}
+.awareness-section h3 {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+  background: linear-gradient(135deg, #e6edf3 0%, #00f5a0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.awareness-subtitle {
+  text-align: center;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  font-size: 1rem;
+}
+.scam-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+.scam-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s;
+}
+.scam-card:hover {
+  border-left: 3px solid var(--accent-red);
+  transform: translateY(-2px);
+}
+.scam-card-icon { font-size: 2rem; margin-bottom: 0.8rem; }
+.scam-card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem 0;
+}
+.scam-how {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+  line-height: 1.4;
+}
+.red-flags {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem 0;
+}
+.red-flags li {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.3rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+}
+.scam-stats {
+  display: inline-block;
+  background: var(--accent-green-dim);
+  color: var(--accent-green);
+  border: 1px solid rgba(0,245,160,0.2);
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+.awareness-cta {
+  text-align: center;
+  padding: 2rem;
+  background: var(--bg-card);
+  border-radius: 12px;
+  border: 1px solid var(--border-primary);
+}
+.awareness-cta p {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+.awareness-cta-sub {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+.awareness-cta-btn {
+  background: var(--accent-green);
+  color: #080b0f;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.awareness-cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(0,245,160,0.3);
+}
+@media (max-width: 600px) {
+  .scam-cards-grid { grid-template-columns: 1fr; }
+}

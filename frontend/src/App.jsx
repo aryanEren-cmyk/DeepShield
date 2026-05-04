@@ -8,6 +8,7 @@ import HistoryPage from './components/HistoryPage'
 import LandingPage from './components/LandingPage'
 import WhatsappSimulator from './components/WhatsappSimulator'
 import LiveCounter from './components/LiveCounter'
+import AwarenessSection from './components/AwarenessSection'
 import { addScan } from './utils/history'
 import './App.css'
 
@@ -199,6 +200,10 @@ function App() {
                 </div>
               </div>
             </section>
+          )}
+
+          {!result && !linkResult && !messageResult && !loading && (
+            <AwarenessSection onScanNow={() => window.scrollTo(0, 0)} />
           )}
         </>
       )}
