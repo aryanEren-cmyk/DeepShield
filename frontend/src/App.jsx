@@ -9,6 +9,8 @@ import LandingPage from './components/LandingPage'
 import WhatsappSimulator from './components/WhatsappSimulator'
 import LiveCounter from './components/LiveCounter'
 import AwarenessSection from './components/AwarenessSection'
+import InstallBanner from './components/InstallBanner'
+import useShareTarget from './hooks/useShareTarget'
 import { addScan } from './utils/history'
 import './App.css'
 
@@ -20,6 +22,23 @@ function App() {
   const [error, setError] = useState(null);
   const [showHistory, setShowHistory] = useState(false);
   const [showLanding, setShowLanding] = useState(false);
+
+  const [sharedMessage, setSharedMessage] = useState(null);
+
+  const handleSharedMessage = (message) => {
+    // Switch to message scanner mode
+    setResult(null);
+    setLinkResult(null);
+    setMessageResult(null);
+    setShowHistory(false);
+    setShowLanding(false);
+    // Store shared message in state to pass to UploadBox
+    setSharedMessage(message);
+    // Scroll to upload box
+    window.scrollTo(0, 0);
+  };
+
+  useShareTarget(handleSharedMessage);
 
   const [showWhatsappDemo, setShowWhatsappDemo] = useState(false);
   const [demoTab, setDemoTab] = useState('job');
@@ -113,6 +132,7 @@ function App() {
 
   return (
     <div className="app-container fade-in">
+      <InstallBanner />
       <header className="header">
         <div className="header-content">
           <h1 style={{ cursor: 'pointer' }} onClick={goHome}>
@@ -161,6 +181,8 @@ function App() {
               onError={handleError}
               loading={loading}
               setLoading={setLoading}
+              sharedMessage={sharedMessage}
+              onSharedMessageHandled={() => setSharedMessage(null)}
             />
           )}
 

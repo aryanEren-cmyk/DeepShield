@@ -1882,3 +1882,56 @@ a {
 @media (max-width: 600px) {
   .scam-cards-grid { grid-template-columns: 1fr; }
 }
+
+.install-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--bg-card);
+  border-top: 2px solid var(--accent-green);
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 1000;
+  gap: 1rem;
+}
+
+.install-banner-content span {
+  font-weight: 700;
+  color: var(--accent-green);
+  font-size: 1rem;
+}
+
+.install-banner-content p {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin: 0.2rem 0 0 0;
+}
+
+.install-banner-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.install-btn {
+  background: var(--accent-green);
+  color: #080b0f;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.dismiss-btn {
+  background: transparent;
+  border: 1px solid var(--border-primary);
+  color: var(--text-secondary);
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  cursor: pointer;
+}

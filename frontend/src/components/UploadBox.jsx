@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import WhatsappSimulator from './WhatsappSimulator';
 
-const UploadBox = ({ onResult, onLinkResult, onMessageResult, onError, loading, setLoading }) => {
+const UploadBox = ({ onResult, onLinkResult, onMessageResult, onError, loading, setLoading, sharedMessage, onSharedMessageHandled }) => {
   const [mode, setMode] = useState('file');
   const [urlInput, setUrlInput] = useState('');
   const [linkInput, setLinkInput] = useState('');
@@ -28,6 +28,19 @@ const UploadBox = ({ onResult, onLinkResult, onMessageResult, onError, loading, 
     }
     return () => clearInterval(interval);
   }, [loading]);
+
+  useEffect(() => {
+    if (sharedMessage) {
+      setMode('message');
+      setMessageUIMode('text');
+      setMessageInput(sharedMessage);
+      onSharedMessageHandled();
+      // Auto trigger scan after short delay
+      setTimeout(() => {
+        handleMessageSubmit(sharedMessage);
+      }, 500);
+    }
+  }, [sharedMessage]);
 
   const testImages = [
     { label: "Test Real Photo", url: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Gatto_europeo4.jpg/320px-Gatto_europeo4.jpg" },
