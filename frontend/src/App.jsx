@@ -60,8 +60,6 @@ function App() {
   }
 
   const handleLinkResult = (data) => {
-    // Optionally add link scans to history if supported, otherwise just set state
-    // addScan(data); 
     setLinkResult(data);
     if (showLanding) {
       setShowLanding(false);
@@ -216,12 +214,10 @@ function App() {
 
       <footer className="footer">
         <p>DeepShield © 2025 — Built to fight misinformation</p>
-        <p><a href="https://github.com/aryanEren-cmyk/DeepShield" target="_blank" rel="noreferrer">GitHub Repository</a>
-        </p>
         <p className="powered-by">Powered by Sightengine AI</p>
       </footer>
 
-      {/* Floating Demo Button */}
+      {/* Floating WhatsApp Demo Button */}
       <button className="whatsapp-float-btn" onClick={() => setShowWhatsappDemo(true)}>
         💬 Try WhatsApp Demo
       </button>
@@ -231,24 +227,24 @@ function App() {
         <div className="whatsapp-modal-overlay" onClick={() => setShowWhatsappDemo(false)}>
           <div className="whatsapp-modal" onClick={(e) => e.stopPropagation()}>
             <div className="whatsapp-modal-header">
-              <h3 style={{margin: 0, color: 'white'}}>See How DeepShield Protects You</h3>
+              <h3 style={{ margin: 0, color: 'white' }}>See How DeepShield Protects You</h3>
               <button className="modal-close-btn" onClick={() => setShowWhatsappDemo(false)}>&times;</button>
             </div>
-            
+
             <div className="demo-tabs">
-              <button 
+              <button
                 className={`demo-tab ${demoTab === 'job' ? 'active' : ''}`}
                 onClick={() => { setDemoTab('job'); setDemoResult(null); }}
               >
                 💼 Fake Job Offer
               </button>
-              <button 
+              <button
                 className={`demo-tab ${demoTab === 'friend' ? 'active' : ''}`}
                 onClick={() => { setDemoTab('friend'); setDemoResult(null); }}
               >
                 🆘 Friend Scam
               </button>
-              <button 
+              <button
                 className={`demo-tab ${demoTab === 'bank' ? 'active' : ''}`}
                 onClick={() => { setDemoTab('bank'); setDemoResult(null); }}
               >
@@ -256,7 +252,7 @@ function App() {
               </button>
             </div>
 
-            <WhatsappSimulator 
+            <WhatsappSimulator
               initialMessage={demoMessages[demoTab]}
               onAnalyze={handleDemoAnalyze}
               result={demoResult}
