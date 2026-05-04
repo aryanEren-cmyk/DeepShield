@@ -1564,3 +1564,143 @@ a {
   50% { transform: scale(1.1); }
   100% { transform: scale(1); }
 }
+
+.whatsapp-simulator {
+  width: 360px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  margin: 0 auto;
+}
+
+.whatsapp-header {
+  background: #075E54;
+  padding: 0.8rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.whatsapp-body {
+  background: #111b21;
+  min-height: 300px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.whatsapp-bubble {
+  background: #202c33;
+  border-radius: 0 12px 12px 12px;
+  padding: 0.8rem 1rem;
+  max-width: 80%;
+  position: relative;
+}
+
+.forwarded-label {
+  font-size: 0.75rem;
+  color: #8696a0;
+  margin-bottom: 0.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.bubble-time {
+  font-size: 0.7rem;
+  color: #8696a0;
+  text-align: right;
+  margin-top: 0.3rem;
+}
+
+.analyze-btn {
+  background: #00f5a0;
+  color: #0f0f0f;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  margin: 1rem auto;
+  display: block;
+  font-size: 0.95rem;
+}
+
+.whatsapp-float-btn {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: #25D366;
+  color: white;
+  border: none;
+  padding: 1rem 1.5rem;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+  z-index: 999;
+  transition: transform 0.2s;
+}
+
+.whatsapp-float-btn:hover {
+  transform: scale(1.05);
+}
+
+.whatsapp-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.whatsapp-modal {
+  background: #161b22;
+  border-radius: 16px;
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 400px;
+  border: 1px solid #30363d;
+}
+
+.whatsapp-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  color: #8b949e;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.demo-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.demo-tab {
+  background: #0d1117;
+  border: 1px solid #30363d;
+  color: #8b949e;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.demo-tab.active {
+  border-color: #00f5a0;
+  color: #00f5a0;
+}

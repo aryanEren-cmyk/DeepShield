@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
+import axios from 'axios'
 import UploadBox from './components/UploadBox'
 import ResultCard from './components/ResultCard'
 import LinkResultCard from './components/LinkResultCard'
 import MessageResultCard from './components/MessageResultCard'
 import HistoryPage from './components/HistoryPage'
 import LandingPage from './components/LandingPage'
+import WhatsappSimulator from './components/WhatsappSimulator'
 import { addScan } from './utils/history'
 import './App.css'
 
@@ -16,6 +18,32 @@ function App() {
   const [error, setError] = useState(null);
   const [showHistory, setShowHistory] = useState(false);
   const [showLanding, setShowLanding] = useState(false);
+
+  const [showWhatsappDemo, setShowWhatsappDemo] = useState(false);
+  const [demoTab, setDemoTab] = useState('job');
+  const [demoResult, setDemoResult] = useState(null);
+  const [demoLoading, setDemoLoading] = useState(false);
+
+  const demoMessages = {
+    job: "Congratulations! You have been selected for a work from home job. Earn ₹50,000/month. Registration fee ₹500 only. Pay here: http://fakejobs.xyz/register. Reply ASAP!",
+    friend: "Hey bro, I lost my wallet and phone. I am stuck urgently. Please send ₹3000 to this UPI immediately: friend@scam. I'll return tomorrow. Trust me it's me your friend Rahul.",
+    bank: "URGENT: Your SBI account will be blocked. Verify your KYC immediately at: http://sbi-verify.fake.com/kyc. Failure to verify in 24 hours will result in permanent account suspension."
+  };
+
+  const handleDemoAnalyze = async (msg) => {
+    setDemoLoading(true);
+    setError(null);
+    setDemoResult(null);
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const response = await axios.post(`${apiUrl}/api/scanmessage`, { message: msg });
+      setDemoResult(response.data);
+    } catch (err) {
+      setError(err.response?.data?.error || err.message || "An error occurred");
+    } finally {
+      setDemoLoading(false);
+    }
+  };
 
   const handleEnterApp = () => {
     setShowLanding(false);
@@ -192,6 +220,53 @@ function App() {
         </p>
         <p className="powered-by">Powered by Sightengine AI</p>
       </footer>
+
+      {/* Floating Demo Button */}
+      <button className="whatsapp-float-btn" onClick={() => setShowWhatsappDemo(true)}>
+        💬 Try WhatsApp Demo
+      </button>
+
+      {/* WhatsApp Modal */}
+      {showWhatsappDemo && (
+        <div className="whatsapp-modal-overlay" onClick={() => setShowWhatsappDemo(false)}>
+          <div className="whatsapp-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="whatsapp-modal-header">
+              <h3 style={{margin: 0, color: 'white'}}>See How DeepShield Protects You</h3>
+              <button className="modal-close-btn" onClick={() => setShowWhatsappDemo(false)}>&times;</button>
+            </div>
+            
+            <div className="demo-tabs">
+              <button 
+                className={`demo-tab ${demoTab === 'job' ? 'active' : ''}`}
+                onClick={() => { setDemoTab('job'); setDemoResult(null); }}
+              >
+                💼 Fake Job Offer
+              </button>
+              <button 
+                className={`demo-tab ${demoTab === 'friend' ? 'active' : ''}`}
+                onClick={() => { setDemoTab('friend'); setDemoResult(null); }}
+              >
+                🆘 Friend Scam
+              </button>
+              <button 
+                className={`demo-tab ${demoTab === 'bank' ? 'active' : ''}`}
+                onClick={() => { setDemoTab('bank'); setDemoResult(null); }}
+              >
+                🏦 Bank Phishing
+              </button>
+            </div>
+
+            <WhatsappSimulator 
+              initialMessage={demoMessages[demoTab]}
+              onAnalyze={handleDemoAnalyze}
+              result={demoResult}
+              loading={demoLoading}
+              readOnly={true}
+              onMessageChange={() => setDemoResult(null)}
+            />
+          </div>
+        </div>
+      )}
     </div>
   )
 }

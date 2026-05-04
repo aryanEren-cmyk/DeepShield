@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
+import WhatsappSimulator from './WhatsappSimulator';
 
 const UploadBox = ({ onResult, onLinkResult, onMessageResult, onError, loading, setLoading }) => {
   const [mode, setMode] = useState('file');
@@ -10,6 +11,10 @@ const UploadBox = ({ onResult, onLinkResult, onMessageResult, onError, loading, 
   const [selectedFile, setSelectedFile] = useState(null);
   const [loadingStep, setLoadingStep] = useState(0);
   const fileInputRef = useRef(null);
+
+  const [messageUIMode, setMessageUIMode] = useState('text');
+  const [localWhatsappResult, setLocalWhatsappResult] = useState(null);
+  const [whatsappLoading, setWhatsappLoading] = useState(false);
 
   useEffect(() => {
     let interval;
@@ -122,6 +127,7 @@ const UploadBox = ({ onResult, onLinkResult, onMessageResult, onError, loading, 
     if (!targetMessage) return;
     if (overrideMessage) {
       setMode('message');
+      setMessageUIMode('text');
       setMessageInput(overrideMessage);
     }
     setLoading(true);
@@ -135,6 +141,21 @@ const UploadBox = ({ onResult, onLinkResult, onMessageResult, onError, loading, 
       onError(err.response?.data?.error || err.message || "An error occurred");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleWhatsappAnalyze = async (msg) => {
+    setWhatsappLoading(true);
+    onError(null);
+    setLocalWhatsappResult(null);
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const response = await axios.post(`${apiUrl}/api/scanmessage`, { message: msg });
+      setLocalWhatsappResult(response.data);
+    } catch (err) {
+      onError(err.response?.data?.error || err.message || "An error occurred");
+    } finally {
+      setWhatsappLoading(false);
     }
   };
 
@@ -255,32 +276,58 @@ const UploadBox = ({ onResult, onLinkResult, onMessageResult, onError, loading, 
               </div>
             ) : (
               <div className="message-mode">
-                <textarea
-                  className="message-textarea"
-                  value={messageInput}
-                  onChange={(e) => setMessageInput(e.target.value)}
-                  placeholder={'Paste a suspicious message (WhatsApp, SMS, email)\n\nExample:\n"Hey, I lost my wallet. Please send ₹3000 urgently to this UPI: scam@upi. Check: http://bit.ly/fakehelp"'}
-                />
-                <p style={{ fontSize: '0.85rem', color: '#888', marginTop: '0.5rem', marginBottom: '1rem' }}>
-                  DeepShield doesn't just scan files — it understands scams.
-                </p>
-                <button className="submit-btn" onClick={() => handleMessageSubmit(null)} disabled={!messageInput}>
-                  Analyze Message 🧠
-                </button>
-                <div className="quick-test-section" style={{ marginTop: '1.5rem', borderTop: '1px solid #333', paddingTop: '1rem' }}>
-                  <p>Try a Demo Scam:</p>
-                  <div className="test-buttons">
-                    <button className="demo-scam-btn" onClick={() => handleMessageSubmit("Congratulations! You have been selected for a work from home job. Earn ₹50,000/month. Registration fee ₹500 only. Pay here: http://fakejobs.xyz/register. Reply ASAP!")}>
-                      💼 Fake Job Offer
-                    </button>
-                    <button className="demo-scam-btn" onClick={() => handleMessageSubmit("Hey bro, I lost my wallet and phone. I am stuck urgently. Please send ₹3000 to this UPI immediately: friend@scam. I'll return tomorrow. Trust me it's me your friend Rahul.")}>
-                      🆘 Emergency Friend Scam
-                    </button>
-                    <button className="demo-scam-btn" onClick={() => handleMessageSubmit("URGENT: Your SBI account will be blocked. Verify your KYC immediately at: http://sbi-verify.fake.com/kyc. Failure to verify in 24 hours will result in permanent account suspension.")}>
-                      🏦 Bank Phishing
-                    </button>
-                  </div>
+                <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', justifyContent: 'center' }}>
+                  <button 
+                    className={`demo-tab ${messageUIMode === 'text' ? 'active' : ''}`}
+                    onClick={() => setMessageUIMode('text')}
+                  >
+                    📝 Text Mode
+                  </button>
+                  <button 
+                    className={`demo-tab ${messageUIMode === 'whatsapp' ? 'active' : ''}`}
+                    onClick={() => setMessageUIMode('whatsapp')}
+                  >
+                    💬 WhatsApp Mode
+                  </button>
                 </div>
+
+                {messageUIMode === 'whatsapp' ? (
+                  <WhatsappSimulator 
+                    onAnalyze={handleWhatsappAnalyze}
+                    result={localWhatsappResult}
+                    loading={whatsappLoading}
+                    onMessageChange={() => setLocalWhatsappResult(null)}
+                  />
+                ) : (
+                  <>
+                    <textarea
+                      className="message-textarea"
+                      value={messageInput}
+                      onChange={(e) => setMessageInput(e.target.value)}
+                      placeholder={'Paste a suspicious message (WhatsApp, SMS, email)\n\nExample:\n"Hey, I lost my wallet. Please send ₹3000 urgently to this UPI: scam@upi. Check: http://bit.ly/fakehelp"'}
+                    />
+                    <p style={{ fontSize: '0.85rem', color: '#888', marginTop: '0.5rem', marginBottom: '1rem' }}>
+                      DeepShield doesn't just scan files — it understands scams.
+                    </p>
+                    <button className="submit-btn" onClick={() => handleMessageSubmit(null)} disabled={!messageInput}>
+                      Analyze Message 🧠
+                    </button>
+                    <div className="quick-test-section" style={{ marginTop: '1.5rem', borderTop: '1px solid #333', paddingTop: '1rem' }}>
+                      <p>Try a Demo Scam:</p>
+                      <div className="test-buttons">
+                        <button className="demo-scam-btn" onClick={() => handleMessageSubmit("Congratulations! You have been selected for a work from home job. Earn ₹50,000/month. Registration fee ₹500 only. Pay here: http://fakejobs.xyz/register. Reply ASAP!")}>
+                          💼 Fake Job Offer
+                        </button>
+                        <button className="demo-scam-btn" onClick={() => handleMessageSubmit("Hey bro, I lost my wallet and phone. I am stuck urgently. Please send ₹3000 to this UPI immediately: friend@scam. I'll return tomorrow. Trust me it's me your friend Rahul.")}>
+                          🆘 Emergency Friend Scam
+                        </button>
+                        <button className="demo-scam-btn" onClick={() => handleMessageSubmit("URGENT: Your SBI account will be blocked. Verify your KYC immediately at: http://sbi-verify.fake.com/kyc. Failure to verify in 24 hours will result in permanent account suspension.")}>
+                          🏦 Bank Phishing
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             )}
           </div>
