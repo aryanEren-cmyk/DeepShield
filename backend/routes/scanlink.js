@@ -1,6 +1,7 @@
 const express = require('express');
 const axios = require('axios');
 const FormData = require('form-data');
+const { incrementStat } = require('./stats');
 const router = express.Router();
 
 router.post('/', async (req, res) => {
@@ -53,6 +54,11 @@ router.post('/', async (req, res) => {
       explanation = "This link shows some suspicious signals. Proceed with caution and avoid entering personal information.";
     } else if (verdict === "SAFE") {
       explanation = "This link appears safe with no malicious signals detected across security scanners.";
+    }
+
+    incrementStat('link');
+    if (verdict === 'DANGEROUS' || verdict === 'SUSPICIOUS') {
+      incrementStat('scam');
     }
 
     res.json({

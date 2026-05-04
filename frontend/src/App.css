@@ -1704,3 +1704,74 @@ a {
   border-color: #00f5a0;
   color: #00f5a0;
 }
+
+.live-counter-section { width: 100%; }
+
+.live-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-green);
+  animation: blinkDot 1.5s infinite;
+}
+
+@keyframes blinkDot {
+  0% { opacity: 0.2; }
+  50% { opacity: 1; box-shadow: 0 0 8px var(--accent-green); }
+  100% { opacity: 0.2; }
+}
+
+.counter-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  width: 100%;
+}
+
+.counter-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: 12px;
+  padding: 1.2rem;
+  text-align: center;
+  transition: all 0.3s;
+}
+
+.counter-card:hover {
+  border-color: var(--accent-green);
+  transform: translateY(-2px);
+}
+
+.counter-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+
+.counter-number {
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin-bottom: 0.3rem;
+}
+
+.counter-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.counter-number.red { color: var(--accent-red); }
+.counter-number.blue { color: var(--accent-blue); }
+.counter-number.green { color: var(--accent-green); }
+.counter-number.white { color: var(--text-primary); }
+
+@media (max-width: 600px) {
+  .counter-grid { grid-template-columns: repeat(2, 1fr); }
+}

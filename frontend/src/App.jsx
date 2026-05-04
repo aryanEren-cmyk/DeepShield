@@ -7,6 +7,7 @@ import MessageResultCard from './components/MessageResultCard'
 import HistoryPage from './components/HistoryPage'
 import LandingPage from './components/LandingPage'
 import WhatsappSimulator from './components/WhatsappSimulator'
+import LiveCounter from './components/LiveCounter'
 import { addScan } from './utils/history'
 import './App.css'
 
@@ -138,21 +139,11 @@ function App() {
             <section className="hero-section">
               <h2>Don't Get Fooled by Deepfakes</h2>
               <p className="subheadline">Upload any image and know the truth in seconds</p>
-              <div className="stat-cards">
-                <div className="stat-card">
-                  <span className="stat-value">8M+</span>
-                  <span className="stat-label">Deepfakes online in 2025</span>
-                </div>
-                <div className="stat-card">
-                  <span className="stat-value">96%</span>
-                  <span className="stat-label">Detection accuracy</span>
-                </div>
-                <div className="stat-card">
-                  <span className="stat-value">2s</span>
-                  <span className="stat-label">Average scan time</span>
-                </div>
-              </div>
             </section>
+          )}
+
+          {!result && !linkResult && !messageResult && !loading && (
+            <LiveCounter />
           )}
 
           {error && (

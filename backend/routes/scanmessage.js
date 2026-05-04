@@ -1,6 +1,7 @@
 const express = require('express');
 const axios = require('axios');
 const FormData = require('form-data');
+const { incrementStat } = require('./stats');
 const router = express.Router();
 
 const urgencyKeywords = ["urgent", "urgently", "immediately", "asap", "hurry", "right now", "emergency", "help me", "stuck"];
@@ -126,6 +127,11 @@ router.post('/', async (req, res) => {
       recommended_action = "Verify the sender's identity through a different channel. Avoid clicking links or sharing personal information.";
     } else {
       recommended_action = "Message appears safe, but always verify unexpected requests.";
+    }
+
+    incrementStat('message');
+    if (verdict === 'SCAM LIKELY' || verdict === 'SUSPICIOUS') {
+      incrementStat('scam');
     }
 
     res.json({

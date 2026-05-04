@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const axios = require('axios');
+const { incrementStat } = require('./stats');
 
 // Configure multer for memory storage (no disk writes)
 const upload = multer({ storage: multer.memoryStorage() });
@@ -101,6 +102,11 @@ router.post('/', upload.single('image'), async (req, res) => {
         label: "Natural image patterns",
         description: "Lighting, texture and pixel distribution appear consistent with a real photograph"
       });
+    }
+
+    incrementStat('scan');
+    if (verdict === 'FAKE' || verdict === 'SUSPICIOUS') {
+      incrementStat('scam');
     }
 
     // Return the formatted response
