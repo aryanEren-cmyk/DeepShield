@@ -44,8 +44,8 @@ document.addEventListener('DOMContentLoaded', () => {
       // Show loading
       showState(stateLoading);
 
-      // Send POST request to backend
-      fetch('http://localhost:5000/api/detect', {
+      // Send POST request to live backend
+      fetch('https://deepshield-backend-9jpy.onrender.com/api/detect', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
