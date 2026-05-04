@@ -11,6 +11,31 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ success: false, error: "URL is required" });
     }
 
+    // DEMO MODE - hardcoded for presentation
+    if (url === 'http://demo-test.deepshield.com') {
+      incrementStat('link');
+      incrementStat('scam');
+      return res.json({
+        success: true,
+        verdict: "SUSPICIOUS",
+        stats: { malicious: 2, suspicious: 5, undetected: 60, harmless: 10 },
+        scannedUrl: url,
+        explanation: "This link shows suspicious signals across multiple security engines. Proceed with caution and avoid entering personal information."
+      });
+    }
+
+    if (url === 'http://danger-test.deepshield.com') {
+      incrementStat('link');
+      incrementStat('scam');
+      return res.json({
+        success: true,
+        verdict: "DANGEROUS",
+        stats: { malicious: 8, suspicious: 3, undetected: 45, harmless: 5 },
+        scannedUrl: url,
+        explanation: "This link was flagged as malicious by multiple security engines. Do not visit this URL."
+      });
+    }
+
     // Step 1: Submit URL to VirusTotal
     const formData = new FormData();
     formData.append('url', url);
